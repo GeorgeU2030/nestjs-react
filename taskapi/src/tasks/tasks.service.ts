@@ -27,6 +27,6 @@ export class TasksService {
     }
 
     async update(id:string, updateTask:updateTaskDTO){
-        return this.taskModel.findByIdAndUpdate(id, updateTask)
+        return this.taskModel.findByIdAndUpdate(id, updateTask, {new:true})
     }
 }
