@@ -1,4 +1,4 @@
-import { Controller, Get, Post,Put,Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post,Put,Delete, Body, Param, ConflictException, NotFoundException, HttpCode } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { createTaskDTO } from 'src/dto/create-task.dto';
 import { updateTaskDTO } from 'src/dto/update-task.dto';
@@ -14,22 +14,36 @@ export class TasksController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id:string) {
-        return this.taskService.findOne(id);
+    async findOne(@Param('id') id:string) {
+        const task = await this.taskService.findOne(id);
+        if (!task) throw new NotFoundException('Task does not exist!');
+        return task;
     }
 
     @Post()
-    create(@Body() body:createTaskDTO) {
-        return this.taskService.create(body);
+    async create(@Body() body:createTaskDTO) {
+        try {
+            return await this.taskService.create(body);
+          } catch (error) {
+            if (error.code === 11000) {
+              throw new ConflictException('Task already exists');
+            }
+            throw error;
+          }
     }
 
     @Delete(':id')
-    delete(@Param('id') id:string) {
-        return this.taskService.delete(id);
+    @HttpCode(204)
+    async delete(@Param('id') id:string) {
+        const task = await this.taskService.delete(id);
+        if (!task) throw new NotFoundException('Task does not exist!');
+        return task;
     }
 
     @Put(':id')
-    update(@Param('id') id:string, @Body() body:updateTaskDTO) {
-        return this.taskService.update(id, body);
+    async update(@Param('id') id:string, @Body() body:updateTaskDTO) {
+        const task = await this.taskService.update(id, body);
+        if (!task) throw new NotFoundException('Task does not exist!');
+        return task
     }
 }
