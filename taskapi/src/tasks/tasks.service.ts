@@ -10,4 +10,21 @@ export class TasksService {
     findAll(){
         this.taskModel.find();
     }
+
+    async create(createTask:any){
+        const newTask = new this.taskModel(createTask);
+        return newTask.save()
+    }
+
+    async findOne(id:string){
+        return this.taskModel.findById(id)
+    }
+
+    async delete(id:string){
+        return this.taskModel.findByIdAndDelete(id)
+    }
+
+    async update(id:string, updateTask:any){
+        return this.taskModel.findByIdAndUpdate(id, updateTask)
+    }
 }
