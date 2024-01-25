@@ -9,7 +9,7 @@ export class TasksController {
     constructor(private taskService:TasksService) {}
 
     @Get()
-    findAll() {
+    async findAll() {
         return this.taskService.findAll();
     }
 

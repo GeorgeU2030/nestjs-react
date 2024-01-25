@@ -9,8 +9,8 @@ import { updateTaskDTO } from 'src/dto/update-task.dto';
 export class TasksService {
     constructor(@InjectModel(Task.name) private taskModel: Model<Task>) {}
 
-    findAll(){
-        this.taskModel.find();
+    async findAll(): Promise<Task[]> {
+        return this.taskModel.find().exec();
     }
 
     async create(createTask:createTaskDTO){
@@ -18,15 +18,15 @@ export class TasksService {
         return newTask.save()
     }
 
-    async findOne(id:string){
+    async findOne(id:string): Promise<Task> {
         return this.taskModel.findById(id)
     }
 
-    async delete(id:string){
+    async delete(id:string): Promise<Task> {
         return this.taskModel.findByIdAndDelete(id)
     }
 
-    async update(id:string, updateTask:updateTaskDTO){
+    async update(id:string, updateTask:updateTaskDTO): Promise<Task> {
         return this.taskModel.findByIdAndUpdate(id, updateTask, {new:true})
     }
 }
